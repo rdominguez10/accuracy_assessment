@@ -1,0 +1,19 @@
+[general]
+name=accuracy assessment
+description = Accuracy assessment es una herramienta para validar mapas de cobertura del suelo, utilizando el método sugerido por Olofsson et al.
+version=1.0
+qgisMinimumVersion=3.0
+
+about=Accuracy assessment, es un complemento de código abierto y gratuito para Qgis 3.0+ que ofrece una herramienta para validar mapas de cobertura del suelo, utilizando el método sugerido por Olofsson et al (https://drive.google.com/file/d/1Xa0JIKrzIECvcnp4qy8HdQjlRuE1wWJW/view). A partir de un archivo vectorial de puntos de muestreo y mapa de cobertura del suelo en formato raster o vectorial, ofrece los siguientes resultados: 1.- Matriz de confusión, 2.- Tabla de exactitud (Exactitud de productor, exactitud de usuario, exactitud global).
+
+author=Roberto Domínguez Vera
+email=robertdominguezvera10@gmail.com
+category= Raster(tif), Vector(shapefile)
+
+icon:icono_accuracy.png
+experimental=False
+deprecated=False
+
+tags = Accuracy, validación, Raster, Vector, Land cover, covertura del suelo
+tracker=https://github.com/rdominguez10/LAIGE/issues
+repository = https://github.com/rdominguez10/LAIGE/
