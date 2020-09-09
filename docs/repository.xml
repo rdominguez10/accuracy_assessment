@@ -1,0 +1,22 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<plugins>
+    <pyqgis_plugin name="Accuracy Assessment Plugin" version="1.0.0">
+        <description><![CDATA[Accuracy assessment es una herramienta para validar mapas de cobertura del suelo, utilizando el método sugerido por Olofsson et al]]></description>
+        <about><![CDATA[Accuracy assessment, es un complemento de código abierto y gratuito para Qgis 3.0+ que ofrece una herramienta para validar mapas de cobertura del suelo, utilizando el método sugerido por Olofsson et al (https://drive.google.com/file/d/1Xa0JIKrzIECvcnp4qy8HdQjlRuE1wWJW/view). A partir de un archivo vectorial de puntos de muestreo y mapa de cobertura del suelo en formato raster o vectorial, ofrece los siguientes resultados: 1.- Matriz de confusión, 2.- Tabla de exactitud (Exactitud de productor, exactitud de usuario, exactitud global).]]></about>
+        <version>1.0.0</version>
+        <qgis_minimum_version>3.0.0</qgis_minimum_version>
+        <qgis_maximum_version>3.99.0</qgis_maximum_version>
+        <file_name>accuracy_assessment-master.zip</file_name>
+        <icon>http://200.23.34.90/qgis/accuracy_assessment/icons/icono_accuracy.png</icon>
+        <author_name><![CDATA[Roberto Dominguez Vera]]></author_name>
+        <download_url>https://codeload.github.com/rdominguez10/accuracy_assessment/zip/master</download_url>
+        <tracker><![CDATA[https://github.com/rdominguez10/accuracy_assessment/issues]]></tracker>
+        <repository><![CDATA[https://github.com/rdominguez10/accuracy_assessment]]></repository>
+        <tags><![CDATA[Accuracy, validación, Raster, Vector, Land cover, covertura del suelo]]></tags>
+        <downloads>00</downloads>
+        <average_vote>5</average_vote>
+        <rating_votes>00</rating_votes>
+        <external_dependencies></external_dependencies>
+        <server>False</server>
+    </pyqgis_plugin>
+</plugins>
