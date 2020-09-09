@@ -15,5 +15,5 @@ experimental=False
 deprecated=False
 
 tags = Accuracy, validación, Raster, Vector, Land cover, covertura del suelo
-tracker=https://github.com/rdominguez10/LAIGE/issues
-repository = https://github.com/rdominguez10/LAIGE/
+tracker=https://github.com/rdominguez10/accuracy_assessment/issues
+repository = https://github.com/rdominguez10/accuracy_assessment
