@@ -1,0 +1,8 @@
+Clases 
+
+CA0 y 420 = Cuerpos de agua
+DV0 y 410 = Desprovisto de vegetacion
+PA0 y 260 = Plantacion agricola
+Potr0 y 290 = Agropecuario
+SAP0 y 50 = Selva media y alta perennifolia y subperennifolia
+VSa y 161 = Vegetacion secundaria arbustiva
