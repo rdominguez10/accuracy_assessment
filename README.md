@@ -7,3 +7,4 @@ Roberto Domínguez Vera
 ##Licencia
 
 This plugin is distributed under a GNU General Public License version 3.
+=======
