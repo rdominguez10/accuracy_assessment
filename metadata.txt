@@ -1,14 +1,11 @@
 [general]
 name=MapAccurAssess
-description = Accuracy assessment es una herramienta para validar mapas de cobertura del suelo, utilizando el método sugerido por Olofsson et al.
-Accuracy assessment is a tool to validate land cover maps, using the method suggested by Olofsson et al.
+description = Accuracy assessment is a tool to validate land cover maps, using the method suggested by Olofsson et al.
 
 version=1.0
 qgisMinimumVersion=3.0
 
-about=Accuracy assessment, es un complemento de código abierto y gratuito para Qgis 3.0+ que ofrece una herramienta para validar mapas de cobertura del suelo, utilizando el método sugerido por Olofsson et al (https://drive.google.com/file/d/1Xa0JIKrzIECvcnp4qy8HdQjlRuE1wWJW/view). A partir de un archivo vectorial de puntos de muestreo y mapa de cobertura del suelo en formato raster o vectorial, ofrece los siguientes resultados: 1.- Matriz de confusión, 2.- Tabla de exactitud (Exactitud de productor, exactitud de usuario, exactitud global).
-
-Accuracy assessment, is a free and open source plugin for Qgis 3.0+ that offers a tool to validate land cover maps, using the method suggested by Olofsson et al (https://drive.google.com/file/d/ 1Xa0JIKrzIECvcnp4qy8HdQjlRuE1wWJW / view). Starting from a vector file of sampling points and land cover map in raster or vector format, it offers the following results: 1.- Confusion matrix, 2.- Accuracy table (Producer accuracy, user accuracy, accuracy global).
+about=Accuracy assessment, is a free and open source plugin for Qgis 3.0+ that offers a tool to validate land cover maps, using the method suggested by Olofsson et al (https://drive.google.com/file/d/ 1Xa0JIKrzIECvcnp4qy8HdQjlRuE1wWJW / view). Starting from a vector file of sampling points and land cover map in raster or vector format, it offers the following results: 1.- Confusion matrix, 2.- Accuracy table (Producer accuracy, user accuracy, accuracy global).
 
 
 author=Roberto Domínguez Vera
