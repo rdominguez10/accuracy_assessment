@@ -10,19 +10,19 @@
     <x>0</x>
     <y>0</y>
     <width>684</width>
-    <height>478</height>
+    <height>520</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>684</width>
-    <height>478</height>
+    <height>520</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>684</width>
-    <height>478</height>
+    <height>520</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -312,8 +312,8 @@ p, li { white-space: pre-wrap; }
   <widget class="QPushButton" name="aceptar">
    <property name="geometry">
     <rect>
-     <x>500</x>
-     <y>440</y>
+     <x>510</x>
+     <y>480</y>
      <width>89</width>
      <height>25</height>
     </rect>
@@ -325,14 +325,27 @@ p, li { white-space: pre-wrap; }
   <widget class="QPushButton" name="cancelar">
    <property name="geometry">
     <rect>
-     <x>390</x>
-     <y>440</y>
+     <x>400</x>
+     <y>480</y>
      <width>89</width>
      <height>25</height>
     </rect>
    </property>
    <property name="text">
     <string>Cancelar</string>
+   </property>
+  </widget>
+  <widget class="QProgressBar" name="progressBar">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>450</y>
+     <width>671</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="value">
+    <number>0</number>
    </property>
   </widget>
  </widget>

@@ -10,6 +10,7 @@ from qgis.core import QgsRasterLayer
 from qgis.core import QgsProject
 from qgis.core import QgsExpression
 from qgis.core import QgsFeatureRequest
+import time
 
 DialogUi , DialogType= uic.loadUiType(os.path.join(os.path.dirname(__file__),'evaluacion_precision.ui'))
 #DialogUi , DialogType= uic.loadUiType('/home/laige/.local/share/QGIS/QGIS3/profiles/default/python/plugins/accuracy_assessment/evaluacion_precisión.ui')
@@ -299,13 +300,26 @@ class validacion(DialogType,DialogUi):
             if (self.comprobarInterfaz() == True):
                 self.reultados.append("Inicia proceso de validación")
                 matriz,clases,error = self.generarMatriz()
+                for n in range(11):
+                    time.sleep(.1)
+                    self.progressBar.setValue(n)
                 if(error):
                     matrizArea,error = self.calcularArea(clases)
                     if(error):
+                        for n in range(11,51):
+                            time.sleep(.1)
+                            self.progressBar.setValue(n)
                         confusion = np.array(matriz).astype(int)
                         clasesMapa = matrizArea[:,1].shape
                         self.calTablaError(matrizArea[:,1],confusion,clases,matriz)
+                        for n in range(51,101):
+                            time.sleep(.1)
+                            self.progressBar.setValue(n)
                         QMessageBox.information(self,"Exito","Proceso termindado",QMessageBox.Ok)
+                    else:
+                        self.progressBar.setValue(0)
+                else:
+                    self.progressBar.setValue(0)
         except PermissionError:
             QMessageBox.information(self,"Error","Permiso denegado para guardar los resultados",QMessageBox.Ok)
             
