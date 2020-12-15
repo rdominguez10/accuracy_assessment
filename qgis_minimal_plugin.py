@@ -47,6 +47,7 @@ class MinimalPlugin:
         self.iface.removeToolBarIcon(self.action)
         self.iface.removePluginMenu(self.menu_name_plugin, self.dockable_action)
         self.iface.removePluginMenu(self.menu_name_plugin, self.dockable_action2)
+        self.iface.removeToolBarIcon(self.action2)
         del self.action
 
     def run(self):
