@@ -15,8 +15,8 @@ from qgis.core import QgsVectorLayer
 from qgis.core import QgsRasterLayer
 import time
 
-DialogUi , DialogType= uic.loadUiType(os.path.join(os.path.dirname(__file__),'aleatorios.ui'))
-#DialogUi , DialogType= uic.loadUiType('/home/laige/Documentos/evaluacion/aleatorios/aleatorios.ui')
+#DialogUi , DialogType= uic.loadUiType(os.path.join(os.path.dirname(__file__),'aleatorios.ui'))
+DialogUi , DialogType= uic.loadUiType('/home/laige/Documentos/evaluacion/aleatorios/aleatorios.ui')
 
 class aleatorios(DialogType,DialogUi):
     def __init__ (self):
@@ -147,6 +147,7 @@ class aleatorios(DialogType,DialogUi):
                     band = data.GetRasterBand(1)
                     nodata = band.GetNoDataValue()
                     encontrarMetros = getProjec.find("metre")
+                    tipoData = gdal.GetDataTypeName(band.DataType)
                     if encontrarMetros != -1:
                         geotr = data.GetGeoTransform()
                         pixel_area = abs(geotr[1] * geotr[5])
@@ -170,14 +171,14 @@ class aleatorios(DialogType,DialogUi):
                                 i = i + 1
                         
                         for n in range(11):
-                            time.sleep(.2)
+                            time.sleep(.1)
                             self.progressBar.setValue(n)
                         #print(ui)
                         
                         clases, aleatorios = self.numeroMuestras(ui, matrizAreaClass) 
                         #time.sleep(1)
                         for x in range(11,41):
-                            time.sleep(.2)
+                            time.sleep(.1)
                             self.progressBar.setValue(x)
                         dataImg = data.ReadAsArray()
                         GeoTransforImg = data.GetGeoTransform()
@@ -234,7 +235,7 @@ class aleatorios(DialogType,DialogUi):
                         #shapeData.Destroy() #lets close the shapefile  
                         #data.GetProjectionRef()
                         puntos = self.abriraleatorios(direccion)
-                        self.generarAleatorios(puntos,proj,aleatorios,nodata,clases)
+                        self.generarAleatorios(puntos,proj,aleatorios,nodata,clases,tipoData)
                         for y in range(41,91):
                             time.sleep(.1)
                             self.progressBar.setValue(y)
@@ -243,7 +244,7 @@ class aleatorios(DialogType,DialogUi):
                         os.remove("sitios.prj")
                         os.remove("sitios.shx")
                         os.remove("sitios.dbf")
-                        time.sleep(.4)
+                        time.sleep(.3)
                         for y in range(41,101):
                             self.progressBar.setValue(y)       
                         QMessageBox.information(self,"Exito","Proceso termindado",QMessageBox.Ok)
@@ -419,7 +420,7 @@ class aleatorios(DialogType,DialogUi):
             i = i + 1
         return matrizAreaClass
     
-    def generarAleatorios(self,puntos,proj,aleatorios,nodata,clases):
+    def generarAleatorios(self,puntos,proj,aleatorios,nodata,clases,tipoData):
         direccion = 'sitiosAleatorios.shp'
         self.iniciarSapeFile(direccion,proj)
         driver = ogr.GetDriverByName("ESRI Shapefile")
@@ -431,10 +432,14 @@ class aleatorios(DialogType,DialogUi):
         i = 0
         #print(clases)
         for clase in clases.tolist():
-            #print(nodata)
+            
             #print(str(clase)+" clas")
             if str(clase) != str(nodata):
-                puntosClase =puntos[puntos[:,1] == str(float(clase))]
+                if tipoData == 'Byte' or tipoData == 'Int16' or tipoData == 'UInt16' or tipoData == 'UInt32' or tipoData == 'Int32' or tipoData == 'CInt16' or tipoData == 'CInt32':
+                    cla = int(clase)
+                else:
+                    cla = float(clase)
+                puntosClase =puntos[puntos[:,1] == str(cla)]
                 longitud = len(puntosClase)
                 #print(longitud)
                 #print(aleatorios[i])
@@ -515,5 +520,5 @@ for clase in unicos:
     
 
     
-#dialogo = aleatorios()
-#dialogo.show()
+dialogo = aleatorios()
+dialogo.show()
