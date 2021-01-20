@@ -15,8 +15,8 @@ from qgis.core import QgsVectorLayer
 from qgis.core import QgsRasterLayer
 import time
 
-#DialogUi , DialogType= uic.loadUiType(os.path.join(os.path.dirname(__file__),'aleatorios.ui'))
-DialogUi , DialogType= uic.loadUiType('/home/laige/Documentos/evaluacion/aleatorios/aleatorios.ui')
+DialogUi , DialogType= uic.loadUiType(os.path.join(os.path.dirname(__file__),'aleatorios.ui'))
+#DialogUi , DialogType= uic.loadUiType('/home/laige/Documentos/evaluacion/aleatorios/aleatorios.ui')
 
 class aleatorios(DialogType,DialogUi):
     def __init__ (self):
@@ -45,6 +45,9 @@ class aleatorios(DialogType,DialogUi):
         elif(self.textResultado.text() == ""):
             QMessageBox.information(self,"Error","Seleccionar una carpeta para guardar los resultados",QMessageBox.Ok)
             self.prueba = False
+        elif(int(self.distancia.text()) < 100):
+            QMessageBox.information(self,"Error","Distancia minima 100 m",QMessageBox.Ok)
+            self.prueba = False            
         try:
             if error == 1:
                 int(self.distancia.text())
@@ -191,8 +194,8 @@ class aleatorios(DialogType,DialogUi):
                         aleatorioX = random.randint(1, tamanox)
                         aleatorioY = random.randint(1, tamanoy)
                         
-                        distancia = int(self.distancia.text())/GeoTransforImg[1]
-                        print(distancia)
+                        distancia = int(100/GeoTransforImg[1])
+                        #print(distancia)
                         nuevaCoordenadaY = GeoTransforImg[3]+(aleatorioY*GeoTransforImg[5])
                         nuevaCoordenadaX = GeoTransforImg[0]+(aleatorioX*GeoTransforImg[1])
                         CoordenadXOrigen = nuevaCoordenadaX
@@ -217,7 +220,9 @@ class aleatorios(DialogType,DialogUi):
                                 idUnico = idUnico + 1
                                 coordenadaXIzquierda = coordenadaXIzquierda - (int(distancia) * GeoTransforImg[1])    
                             nuevaCoordenadaY = nuevaCoordenadaY+(int(distancia)*GeoTransforImg[5])
-                            
+                        for y in range(41,61):
+                            time.sleep(.1)
+                            self.progressBar.setValue(y)                            
                         while GeoTransforImg[3] > nuevaCoordenadaYarriba:
                             CoordenadXOrigen2 = CoordenadXOrigen
                             CoordenadXOrigenIzquierda2 = CoordenadXOrigenIzquierda
@@ -232,11 +237,14 @@ class aleatorios(DialogType,DialogUi):
                                 idUnico = idUnico + 1
                                 CoordenadXOrigenIzquierda2 = CoordenadXOrigenIzquierda2 - (int(distancia) * GeoTransforImg[1])
                             nuevaCoordenadaYarriba = nuevaCoordenadaYarriba-(int(distancia)*GeoTransforImg[5])
+                        for y in range(41,81):
+                            time.sleep(.1)
+                            self.progressBar.setValue(y)  
                         #shapeData.Destroy() #lets close the shapefile  
                         #data.GetProjectionRef()
                         puntos = self.abriraleatorios(direccion)
                         self.generarAleatorios(puntos,proj,aleatorios,nodata,clases,tipoData)
-                        for y in range(41,91):
+                        for y in range(81,91):
                             time.sleep(.1)
                             self.progressBar.setValue(y)
                             
@@ -245,9 +253,11 @@ class aleatorios(DialogType,DialogUi):
                         os.remove("sitios.shx")
                         os.remove("sitios.dbf")
                         time.sleep(.3)
-                        for y in range(41,101):
+                        for y in range(91,101):
                             self.progressBar.setValue(y)       
                         QMessageBox.information(self,"Exito","Proceso termindado",QMessageBox.Ok)
+                        capa = QgsVectorLayer("sitiosAleatorios.shp", "sitiosAleatorios", "ogr")
+                        QgsProject.instance().addMapLayer(capa)
                         self.progressBar.setValue(0) 
                         self.tableWidget.clear()
                         self.tableWidget.setRowCount(0)
@@ -429,7 +439,7 @@ class aleatorios(DialogType,DialogUi):
         layer_defn = layer.GetLayerDefn()
         point = ogr.Geometry(ogr.wkbPoint)
         #clases = np.unique(puntos[:,1])
-        i = 0
+        j = 0
         #print(clases)
         for clase in clases.tolist():
             
@@ -443,21 +453,144 @@ class aleatorios(DialogType,DialogUi):
                 longitud = len(puntosClase)
                 #print(longitud)
                 #print(aleatorios[i])
-                if longitud > aleatorios[i]: 
-                    randomPuntos = random.sample(puntosClase[:,0].tolist(),aleatorios[i])
+                numeroOptimo = aleatorios[j] * 3
+                if longitud > numeroOptimo: 
+                    muestras = aleatorios[j]
+                    #randomPuntos = random.sample(puntosClase[:,0].tolist(),aleatorios[i])
                 else: 
-                    randomPuntos = random.sample(puntosClase[:,0].tolist(),longitud)
-                for punto in randomPuntos:
-                    puntos2 = puntosClase[puntosClase[:,0] ==punto]    
-                    #print(puntos2)
-                    point = ogr.CreateGeometryFromWkt(str(puntos2[0,2]))
-                    point.AddPoint(point.GetX(), point.GetY())
-                    feature = ogr.Feature(layer_defn)
-                    feature.SetGeometry(point)
-                    feature.SetField("id",puntos2[0,0])
-                    feature.SetField("clases",str(puntos2[0,1]))
-                    layer.CreateFeature(feature)
-                i=i+1 
+                    muestras = int(longitud/3)
+                    #randomPuntos = random.sample(puntosClase[:,0].tolist(),int(numeroOptimo))
+                
+                bandera = 0
+                n1 = []
+                bufferDistance = int(self.distancia.text())
+                for sitio in range(1,muestras+1):
+                    #print(sitio)
+                    if bandera == 0:
+                        n2 = random.sample(puntosClase[:,0].tolist(),1)
+                        n1.append(n2)                        
+                        punto2 = puntosClase[puntosClase[:,0] ==n2] 
+                        geometria2 = str(punto2[0,2])
+                        point2 = ogr.CreateGeometryFromWkt(geometria2)                        
+                        point.AddPoint(point2.GetX(), point2.GetY())
+                        feature = ogr.Feature(layer_defn)
+                        feature.SetGeometry(point)
+                        feature.SetField("id",punto2[0,0])
+                        feature.SetField("clases",str(punto2[0,1]))
+                        layer.CreateFeature(feature)
+                        bandera = 1 
+                        
+                    else:
+                        n3 = random.sample(puntosClase[:,0].tolist(),1)
+                        nuevoPunto = puntosClase[puntosClase[:,0] ==n3] 
+                        geometria = str(nuevoPunto[0,2])
+                        point3 = ogr.CreateGeometryFromWkt(geometria)
+                        #poly = point.Buffer(bufferDistance)
+                        #print(len(n1))
+                        #prueba = True                        
+                        #while prueba:
+                        #print("inicio: "+str(n3))
+                        bandera1 = 0
+                        
+                        i= 0
+                        prueba = True
+                        cont2 = 0
+                        while prueba:                            
+                            for sitioAleatorio in n1:
+                                #print(sitioAleatorio)
+                                #print(i)
+                                punto2 = puntosClase[puntosClase[:,0] ==sitioAleatorio] 
+                                geometria2 = str(punto2[0,2])
+                                point2 = ogr.CreateGeometryFromWkt(geometria2)
+                                
+                                distancia = point3.Distance(point2)
+                                i = i +1
+                                #time.sleep(1)
+                                
+                                while sitioAleatorio == n3:
+                                    n3 = random.sample(puntosClase[:,0].tolist(),1)
+                                #print(str(sitioAleatorio) + " "+ str(n3)+" dist: "+str(distancia))
+                                if distancia < bufferDistance:
+                                    i= 0
+                                    #print("entro")
+                                    bandera1 = 1
+                                    n3 = random.sample(puntosClase[:,0].tolist(),1)
+                                    nuevoPunto = puntosClase[puntosClase[:,0] ==n3]
+                                    geometria = str(nuevoPunto[0,2])
+                                    point3 = ogr.CreateGeometryFromWkt(geometria)
+                                    #poly = point.Buffer(bufferDistance)
+                                    #distancia = point3.Distance(point2)
+                                    cont2 = cont2 + 1
+                                    #print("cont == "+str(cont2))
+                                    if cont2 == 2:
+                                        bandera1 == 0
+                                        cont2 = 0
+                                        prueba = False
+                                        break
+                                    #time.sleep(1)
+                                    else:
+                                        #print("break "+str(n3))
+                                        break
+                                else:
+                                    bandera1 = 0
+                                #print(str(sitioAleatorio) + " "+ str(n3)+" dist: "+str(distancia))
+                            if bandera1 == 0:
+                                #print("Guarda")
+                                if cont2 != 2:
+                                    #print("guarda")
+                                    n1.append(n3)
+                                    for buscar in n1:
+                                        indice = np.where(puntosClase == buscar)    
+                                        np.delete(puntosClase, indice, axis = 0)
+                                    #print(len(puntosClase))
+                                    point3.AddPoint(point3.GetX(), point3.GetY())
+                                    feature = ogr.Feature(layer_defn)
+                                    feature.SetGeometry(point3)
+                                    feature.SetField("id",nuevoPunto[0,0])
+                                    feature.SetField("clases",str(nuevoPunto[0,1]))
+                                    layer.CreateFeature(feature)
+                                    cont2 = 0
+                                else:
+                                    cont2 = 0
+                                    prueba = False
+                                prueba = False
+                            '''while distancia < bufferDistance:
+                                
+                                if sitioAleatorio != n3:
+                                     
+                                    #print(punto[0,0])
+                                    geometria = str(nuevoPunto[0,2])
+                                    point3 = ogr.CreateGeometryFromWkt(geometria)
+                                    #poly = point.Buffer(bufferDistance)
+                                    distancia = point3.Distance(point2)
+                                    cont2 = cont2 + 1
+                                if cont2 == 5:  
+                                    break
+                        #print(cont2)
+'''
+                #print(len(randomPuntos))
+                #nuevosPuntos = []
+                #for punto in randomPuntos:   
+                    #for compara in randomPuntos:
+                        #if punto != compara:
+                            #puntos2 = puntosClase[puntosClase[:,0] ==punto] 
+                            #puntos3 = puntosClase[puntosClase[:,0] ==compara] 
+                            #geometria = str(puntos2[0,2])
+                            #geometria2 = str(puntos3[0,2])
+                            #print(geometria)
+                            #bufferDistance = 401
+                            #point = ogr.CreateGeometryFromWkt(geometria)
+                            #poly = point.Buffer(bufferDistance)
+                            #print(poly)
+                            #point2 = ogr.CreateGeometryFromWkt(geometria2)
+                            #if poly.Contains(point2):
+                                #randomPuntos = random.sample(puntosClase[:,0].tolist(),int(numeroOptimo))
+                                #print(puntos3[0,0])
+                                #print("hay pegados")
+
+                                #puntos2.remove(puntos3[0,0])
+                            #print(poly.ExportToWkt())
+                j=j+1 
                     
                 #print(puntos2[0,2])
             #print(randomPuntos)        
@@ -520,5 +653,5 @@ for clase in unicos:
     
 
     
-dialogo = aleatorios()
-dialogo.show()
+#dialogo = aleatorios()
+#dialogo.show()
