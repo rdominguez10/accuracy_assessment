@@ -23,11 +23,11 @@ class MinimalPlugin:
         self.menu_name_plugin = self.tr("Accuracy Assessment")
     def initGui(self):
         current_directory = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-        self.action = QAction(QIcon(os.path.join(current_directory, "icons", "icono_accuracy.png")),'accuracy_assessment', self.iface.mainWindow())
+        self.action = QAction(QIcon(os.path.join(current_directory, "icons", "icono_accuracy.png")),'Accuracy assessment', self.iface.mainWindow())
         self.action.triggered.connect(self.run)
         self.iface.addToolBarIcon(self.action)
         
-        self.dockable_action = QAction(QIcon(os.path.join(current_directory, "icons", "icono_accuracy.png")), 'accuracy_assessment', self.iface.mainWindow())
+        self.dockable_action = QAction(QIcon(os.path.join(current_directory, "icons", "icono_accuracy.png")), 'Accuracy assessment', self.iface.mainWindow())
         self.iface.addPluginToMenu(self.menu_name_plugin, self.dockable_action)
         self.dockable_action.triggered.connect(self.run)
         
