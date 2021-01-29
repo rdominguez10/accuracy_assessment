@@ -4,7 +4,7 @@ Accuracy assessment, is a free and open source plugin for Qgis 3.0+ that offers 
 
 # Documentation
 
-Check the user [manual](https://drive.google.com/file/d/12_Zp1WakUsBpumUHXkDRRlovuTnjZwpa/view?usp=sharing)
+Check the user [manual](https://drive.google.com/file/d/16XUJm1dJv7Yt9zhI7RBOhTJ23N8HcKyL/view?usp=sharing)
 
 ## Autor
 Roberto Domínguez Vera
