@@ -15,8 +15,8 @@ from qgis.core import QgsVectorLayer
 from qgis.core import QgsRasterLayer
 import time
 
-DialogUi , DialogType= uic.loadUiType(os.path.join(os.path.dirname(__file__),'aleatorios.ui'))
-#DialogUi , DialogType= uic.loadUiType('/home/laige/Documentos/evaluacion/aleatorios/aleatorios.ui')
+#DialogUi , DialogType= uic.loadUiType(os.path.join(os.path.dirname(__file__),'aleatorios.ui'))
+#DialogUi , DialogType= uic.loadUiType('/home/laige/Documentos/evaluacion/aleatorios/aleatoriosingles.ui')
 
 class aleatorios(DialogType,DialogUi):
     def __init__ (self):
@@ -39,21 +39,31 @@ class aleatorios(DialogType,DialogUi):
             #self.loadLayers(2)
             self.prueba = False
         elif(self.distancia.text() == ""):
-            error = 1
-            QMessageBox.information(self,"Error","Seleccionar una distancia minima",QMessageBox.Ok)
+            #error = 1
+            QMessageBox.information(self,"Error","Ingresar una distancia minima",QMessageBox.Ok)
             self.prueba = False            
+        elif(self.muestras_peque.text() == ""):
+            QMessageBox.information(self,"Error","Ingresar un número de muestras para clases raras",QMessageBox.Ok)
+            self.prueba = False  
         elif(self.textResultado.text() == ""):
             QMessageBox.information(self,"Error","Seleccionar una carpeta para guardar los resultados",QMessageBox.Ok)
             self.prueba = False
-        elif(int(self.distancia.text()) < 100):
-            QMessageBox.information(self,"Error","Distancia minima 100 m",QMessageBox.Ok)
-            self.prueba = False            
         try:
-            if error == 1:
-                int(self.distancia.text())
+            if self.distancia.text() != "":
+                if(int(self.distancia.text()) < 100):
+                    QMessageBox.information(self,"Error","Distancia minima 100 m",QMessageBox.Ok)
+                    self.prueba = False  
         except ValueError:    
             QMessageBox.information(self,"Error","La distancia debe de ser númerico",QMessageBox.Ok)
             self.prueba = False
+        try:
+            if self.muestras_peque.text() != "":
+                if(int(self.muestras_peque.text()) < 50):
+                    QMessageBox.information(self,"Error","Número de muestras para clases raras debe ser un minimo de 50",QMessageBox.Ok)
+                    self.prueba = False  
+        except ValueError:    
+            QMessageBox.information(self,"Error","Número de muestras para clases raras debe ser númerico",QMessageBox.Ok)
+            self.prueba = False            
         #return self.prueba
 
 
@@ -112,7 +122,7 @@ class aleatorios(DialogType,DialogUi):
                 for clase in unicos:
                     if str(clase) != str(int(nodata)):
                         self.tableWidget.setItem(i,0, QTableWidgetItem(str(clase)))
-                        self.tableWidget.setItem(i,1, QTableWidgetItem('.7'))
+                        self.tableWidget.setItem(i,1, QTableWidgetItem('.6'))
                         i = i+1
             
             else:
@@ -194,7 +204,7 @@ class aleatorios(DialogType,DialogUi):
                         aleatorioX = random.randint(1, tamanox)
                         aleatorioY = random.randint(1, tamanoy)
                         
-                        distancia = int(100/GeoTransforImg[1])
+                        distancia = int(int(self.distancia.text())/GeoTransforImg[1])
                         #print(distancia)
                         nuevaCoordenadaY = GeoTransforImg[3]+(aleatorioY*GeoTransforImg[5])
                         nuevaCoordenadaX = GeoTransforImg[0]+(aleatorioX*GeoTransforImg[1])
@@ -237,7 +247,7 @@ class aleatorios(DialogType,DialogUi):
                                 idUnico = idUnico + 1
                                 CoordenadXOrigenIzquierda2 = CoordenadXOrigenIzquierda2 - (int(distancia) * GeoTransforImg[1])
                             nuevaCoordenadaYarriba = nuevaCoordenadaYarriba-(int(distancia)*GeoTransforImg[5])
-                        for y in range(41,81):
+                        for y in range(61,81):
                             time.sleep(.1)
                             self.progressBar.setValue(y)  
                         #shapeData.Destroy() #lets close the shapefile  
@@ -311,6 +321,7 @@ class aleatorios(DialogType,DialogUi):
         return porcentaje, error
 
     def numeroMuestras(self, uis, areas):
+        muestras = int(self.muestras_peque.text())
         n = []
         so = 0.02
         numcat = len(areas[:,1])
@@ -320,7 +331,7 @@ class aleatorios(DialogType,DialogUi):
         for ui in uis:    
             #print(ui)
             si = math.sqrt(ui*(1-ui))
-
+            #print(si)
             n2 = (sum(wi*si)**2)/(so**2+((1/supTot)*sum(wi*si**2)))
             n2 = round(n2,0)  
             n.append(n2)
@@ -329,9 +340,10 @@ class aleatorios(DialogType,DialogUi):
         ni_prop = (((supCat*si)/sum(supCat*si))*n)
         ni0 = ni_prop.astype(int)
         ni_prop2 = ni0
-        ni_prop2[ni_prop2 <= 50] = 50
+        ni_prop2[ni_prop2 <= muestras] = muestras
         x = ni_prop.astype(int)
-        columnas = [" ","Clases","Superficies","ni0","Muestras_apropiadas"]
+        #columnas = [" ","Clases","Superficies (ha)","Muestras_apropiadas","Muestras_sugeridas"]
+        columnas = [" ","Classes","surfaces (ha)","appropriate_samples","suggestd_samples"]
         self.reultados.append("Sitios optimos por clase:")
         self.reultados.append("clases\tSuperficies\tMuestras_apropiadas")
         with open("tama_muestra.csv", mode='w') as file:
@@ -356,7 +368,7 @@ class aleatorios(DialogType,DialogUi):
         #ni_temp = ((supCat[idif]*si)/sum(supCat[idif]*si))*ntemp
         #a = supCat[idif]*si[idif]
         #print(ni_temp)
-        return areas[:,1].astype(int),ni_prop2
+        return areas[:,1].astype(float),ni_prop2
         
     
     def transforPixel(self,coordenadaInicial,imagenTransfor): 
@@ -419,14 +431,19 @@ class aleatorios(DialogType,DialogUi):
         assert(aleatoreos)
         infoShp = aleatoreos.GetLayer(0)
         #features = infoShp.getFeatures()
-        matrizAreaClass = np.empty((len(infoShp), 3)).astype(str)
+        matrizAreaClass = np.empty((len(infoShp), 5)).astype(str)
         #print(len(matrizAreaClass))
         i = 0
         for feature in infoShp:
             geom = feature.GetGeometryRef()
+            listaGeometria = str(geom).split()
             matrizAreaClass[i][0] = feature.GetField('id')
-            matrizAreaClass[i][1] = feature.GetField('clases')
-            matrizAreaClass[i][2] = geom
+            matrizAreaClass[i][1] = feature.GetField('clases') 
+            #print()
+            matrizAreaClass[i][2] = listaGeometria[0]
+            matrizAreaClass[i][3] = listaGeometria[1]
+            matrizAreaClass[i][4] = listaGeometria[2]
+            #print(matrizAreaClass[i][3])
             i = i + 1
         return matrizAreaClass
     
@@ -445,11 +462,13 @@ class aleatorios(DialogType,DialogUi):
             
             #print(str(clase)+" clas")
             if str(clase) != str(nodata):
+                #print(tipoData)
                 if tipoData == 'Byte' or tipoData == 'Int16' or tipoData == 'UInt16' or tipoData == 'UInt32' or tipoData == 'Int32' or tipoData == 'CInt16' or tipoData == 'CInt32':
                     cla = int(clase)
                 else:
                     cla = float(clase)
                 puntosClase =puntos[puntos[:,1] == str(cla)]
+                #print(puntosClase)
                 longitud = len(puntosClase)
                 #print(longitud)
                 #print(aleatorios[i])
@@ -463,14 +482,17 @@ class aleatorios(DialogType,DialogUi):
                 
                 bandera = 0
                 n1 = []
-                bufferDistance = int(self.distancia.text())
+                bufferDistance = int(self.distancia.text())+10
                 for sitio in range(1,muestras+1):
-                    #print(sitio)
+                    print(sitio)
                     if bandera == 0:
                         n2 = random.sample(puntosClase[:,0].tolist(),1)
+                        #print(n2)
                         n1.append(n2)                        
                         punto2 = puntosClase[puntosClase[:,0] ==n2] 
-                        geometria2 = str(punto2[0,2])
+                        
+                        geometria2 = punto2[0,2]+" "+punto2[0,3]+" "+punto2[0,4]
+                        #print(geometria2)
                         point2 = ogr.CreateGeometryFromWkt(geometria2)                        
                         point.AddPoint(point2.GetX(), point2.GetY())
                         feature = ogr.Feature(layer_defn)
@@ -483,7 +505,7 @@ class aleatorios(DialogType,DialogUi):
                     else:
                         n3 = random.sample(puntosClase[:,0].tolist(),1)
                         nuevoPunto = puntosClase[puntosClase[:,0] ==n3] 
-                        geometria = str(nuevoPunto[0,2])
+                        geometria = nuevoPunto[0,2]+" "+nuevoPunto[0,3]+" "+nuevoPunto[0,4]
                         point3 = ogr.CreateGeometryFromWkt(geometria)
                         #poly = point.Buffer(bufferDistance)
                         #print(len(n1))
@@ -500,7 +522,8 @@ class aleatorios(DialogType,DialogUi):
                                 #print(sitioAleatorio)
                                 #print(i)
                                 punto2 = puntosClase[puntosClase[:,0] ==sitioAleatorio] 
-                                geometria2 = str(punto2[0,2])
+                                geometria2 = punto2[0,2]+" "+punto2[0,3]+" "+punto2[0,4]
+                                #print(geometria2)
                                 point2 = ogr.CreateGeometryFromWkt(geometria2)
                                 
                                 distancia = point3.Distance(point2)
@@ -516,7 +539,7 @@ class aleatorios(DialogType,DialogUi):
                                     bandera1 = 1
                                     n3 = random.sample(puntosClase[:,0].tolist(),1)
                                     nuevoPunto = puntosClase[puntosClase[:,0] ==n3]
-                                    geometria = str(nuevoPunto[0,2])
+                                    geometria = nuevoPunto[0,2]+" "+nuevoPunto[0,3]+" "+nuevoPunto[0,4]
                                     point3 = ogr.CreateGeometryFromWkt(geometria)
                                     #poly = point.Buffer(bufferDistance)
                                     #distancia = point3.Distance(point2)
