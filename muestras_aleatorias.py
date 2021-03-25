@@ -15,7 +15,7 @@ from qgis.core import QgsVectorLayer
 from qgis.core import QgsRasterLayer
 import time
 
-#DialogUi , DialogType= uic.loadUiType(os.path.join(os.path.dirname(__file__),'aleatorios.ui'))
+DialogUi , DialogType= uic.loadUiType(os.path.join(os.path.dirname(__file__),'aleatorios.ui'))
 #DialogUi , DialogType= uic.loadUiType('/home/laige/Documentos/evaluacion/aleatorios/aleatoriosingles.ui')
 
 class aleatorios(DialogType,DialogUi):

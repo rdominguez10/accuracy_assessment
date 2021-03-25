@@ -100,9 +100,9 @@ class validacion(DialogType,DialogUi):
         try:
             if str(self.layer2.type()) == "QgsMapLayerType.VectorLayer":
                 for campo in self.layer2.fields():
-                    if(campo.type() == 10 or campo.type() == 2):
+                    if(campo.type() == 10):
                         self.columClase.addItem(QIcon(os.path.join(os.path.dirname(__file__), "icons", "tex.png")),str(campo.name()))
-                    elif(campo.type() == 4):
+                    elif(campo.type() == 4 or campo.type() == 2):
                         self.columClase.addItem(QIcon(os.path.join(os.path.dirname(__file__), "icons", "num.png")),str(campo.name()))
                     #print(current_directory)
                     #self.columClase.addItem(str(campo.name()))
@@ -121,10 +121,10 @@ class validacion(DialogType,DialogUi):
         self.columnaValidar.clear()
         try:
             for campo in self.layer.fields():
-                if(campo.type() == 10 or campo.type() == 2):
+                if(campo.type() == 10):
                     self.columnaVerdadera.addItem(QIcon(os.path.join(os.path.dirname(__file__), "icons", "tex.png")),str(campo.name()))
                     self.columnaValidar.addItem(QIcon(os.path.join(os.path.dirname(__file__), "icons", "tex.png")),str(campo.name()))
-                elif(campo.type() == 4):
+                elif(campo.type() == 4 or campo.type() == 2):
                     self.columnaVerdadera.addItem(QIcon(os.path.join(os.path.dirname(__file__), "icons", "num.png")),str(campo.name()))       
                     self.columnaValidar.addItem(QIcon(os.path.join(os.path.dirname(__file__), "icons", "num.png")),str(campo.name()))
                 #self.columnaVerdadera.addItem(str(campo.name()) ,campo.type())
@@ -404,7 +404,7 @@ class validacion(DialogType,DialogUi):
                 nueva, unicos = self.confusion_matrix(pred, true)#Se cambio la direccion de las columnas para seguir con las mismo metodo elaborado por Dr. Miguel
                 primero = [" "]
                 nameColumn = np.concatenate((np.array(primero), unicos), axis=None)
-                with open(str(self.direccionGuardar)+"/confusion_matriz.csv", mode='w') as file:
+                with open(str(self.direccionGuardar)+"/confusion_matriX.csv", mode='w') as file:
                     writer = csv.writer(file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
                     writer.writerow(nameColumn)
                     i = 0
