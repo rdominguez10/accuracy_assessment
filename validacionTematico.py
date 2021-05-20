@@ -12,8 +12,8 @@ from qgis.core import QgsExpression
 from qgis.core import QgsFeatureRequest
 import time
 
-DialogUi , DialogType= uic.loadUiType(os.path.join(os.path.dirname(__file__),'evaluacion_precision.ui'))
-#DialogUi , DialogType= uic.loadUiType('/home/laige/.local/share/QGIS/QGIS3/profiles/default/python/plugins/accuracy_assessment/evaluacion_precisión.ui')
+DialogUi , DialogType= uic.loadUiType(os.path.join(os.path.dirname(__file__),'evaluacion_precisioningles2.ui'))
+#DialogUi , DialogType= uic.loadUiType('/home/laige/Documentos/evaluacion/github/accuracy_assessment/evaluacion_precisioningles2.ui')
 
 class validacion(DialogType,DialogUi):
     def __init__ (self):
@@ -91,7 +91,7 @@ class validacion(DialogType,DialogUi):
                 self.layer2 = QgsRasterLayer(self.rutaCSVSuperficie, "aleatorios", "gdal")
             elif str(os.path.splitext(nombre)[1]) == ".shp" or str(os.path.splitext(nombre)[1]) == ".SHP":
                 self.layer2 = QgsVectorLayer(self.rutaCSVSuperficie, "aleatorios", "ogr")
-             #= QgsVectorLayer(self.rutaCSVSuperficie, "aleatorios", "ogr")
+            #QgsVectorLayer(self.rutaCSVSuperficie, "aleatorios", "ogr")
         else:
             idLayerQg = self.itemSuperficie.currentData()
             self.layer2 = QgsProject.instance().mapLayer(str(idLayerQg))    
@@ -104,7 +104,7 @@ class validacion(DialogType,DialogUi):
                         self.columClase.addItem(QIcon(os.path.join(os.path.dirname(__file__), "icons", "tex.png")),str(campo.name()))
                     elif(campo.type() == 4 or campo.type() == 2):
                         self.columClase.addItem(QIcon(os.path.join(os.path.dirname(__file__), "icons", "num.png")),str(campo.name()))
-                    #print(current_directory)
+                    print(current_directory)
                     #self.columClase.addItem(str(campo.name()))
         except AttributeError:
             self.columClase.clear()
@@ -350,10 +350,28 @@ class validacion(DialogType,DialogUi):
         try:
             for i in range(0,num):           
                 Spdotj[i] = pow(sum(pow(wi,2) * ((confusion[:,i]/nidot) * (1 - confusion[:,i]/nidot)/(nidot-1))),0.5)
+                print(confusion[:,i])
         except FloatingPointError:
             QMessageBox.information(self,"Error","Existe la posibilidad que el resultado Aj_ics y Aj_ici, no sean correctos por falta de muentras en alguna clase",QMessageBox.Ok)
+
+        VO = []
+        VU = []
+        for i in range(0,num):
+            print(nidot[i])
+            vu = (UsAcc[i]*(1-UsAcc[i]))/(nidot[i]-1)
+            
+            V=pow(wi[i],2)*vu
+            vu = pow(vu,0.5)
+            #print((UsAcc[i]*(1-UsAcc[i]))/(nidot-1))
+            #print(nidot)
+            vu = vu.round(decimals = 3)
+            VU.append(vu)
+            VO.append(V)
+            
+        se = pow(sum(VO),0.5) 
+        se = se.round(decimals = 4)
         SAj = SupTot * Spdotj
-        
+        #print(SAj)
         Aj_ics = Aj + 1.96 * SAj
         Aj_ici = Aj - 1.96 * SAj
         UsAcc = UsAcc.round(decimals = 2)
@@ -362,7 +380,7 @@ class validacion(DialogType,DialogUi):
         Aj_ics = Aj_ics.round(decimals = 0)
         Aj_ici = Aj_ici.round(decimals = 0)
         ovacc = ovacc.round(decimals = 2)
-        columnas = ["clases","UsAcc","ProdAcc","SupCat","Aj","Aj_ics","Aj_ici"]
+        columnas = ["classes","UsAcc","ProdAcc","Area","Areas_adj","Ci_sup","Ci_inf"]
         self.reultados.append("Tabla de error:")
         self.reultados.append("clases\tUsAcc\tProdAcc")
         with open(str(self.direccionGuardar)+"/accura.csv", mode='w') as file:
@@ -378,11 +396,14 @@ class validacion(DialogType,DialogUi):
                 conca = np.concatenate((np.array(conca), Aj[i]), axis=None)
                 conca = np.concatenate((np.array(conca), Aj_ics[i]), axis=None)
                 conca = np.concatenate((np.array(conca), Aj_ici[i]), axis=None)
+                #conca = np.concatenate((np.array(conca), VU[i]), axis=None)
                 self.reultados.append(str(dato)+"\t"+str(UsAcc[i])+"\t"+str(ProdAcc[i]))
                 i += 1
                 writer.writerow(conca)
             self.reultados.append("Exactitud Global:\t"+str(ovacc))
-            writer.writerow(["Exactitud Global:",str(ovacc)])
+            self.reultados.append("STD Global::\t"+str(se))
+            writer.writerow(["Overall accuracy:",str(ovacc)])
+            writer.writerow(["StD Overall(S(O)):",str(se)])
             
     def generarMatriz(self):#Abre llama la funcion confusion_matrix para hacer la matriz de confusion, posteriormente guarda el resultado en CSV
         datos = self.layer.getFeatures()

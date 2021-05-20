@@ -15,7 +15,7 @@ from qgis.core import QgsVectorLayer
 from qgis.core import QgsRasterLayer
 import time
 
-DialogUi , DialogType= uic.loadUiType(os.path.join(os.path.dirname(__file__),'aleatorios.ui'))
+DialogUi , DialogType= uic.loadUiType(os.path.join(os.path.dirname(__file__),'aleatoriosingles.ui'))
 #DialogUi , DialogType= uic.loadUiType('/home/laige/Documentos/evaluacion/aleatorios/aleatoriosingles.ui')
 
 class aleatorios(DialogType,DialogUi):
@@ -50,7 +50,7 @@ class aleatorios(DialogType,DialogUi):
             self.prueba = False
         try:
             if self.distancia.text() != "":
-                if(int(self.distancia.text()) < 100):
+                if(int(self.distancia.text()) < 50):
                     QMessageBox.information(self,"Error","Distancia minima 100 m",QMessageBox.Ok)
                     self.prueba = False  
         except ValueError:    
@@ -343,7 +343,7 @@ class aleatorios(DialogType,DialogUi):
         ni_prop2[ni_prop2 <= muestras] = muestras
         x = ni_prop.astype(int)
         #columnas = [" ","Clases","Superficies (ha)","Muestras_apropiadas","Muestras_sugeridas"]
-        columnas = [" ","Classes","surfaces (ha)","appropriate_samples","suggestd_samples"]
+        columnas = [" ","Classes","area (ha)","samples_neyman","samples_adjusted"]
         self.reultados.append("Sitios optimos por clase:")
         self.reultados.append("clases\tSuperficies\tMuestras_apropiadas")
         with open("tama_muestra.csv", mode='w') as file:
