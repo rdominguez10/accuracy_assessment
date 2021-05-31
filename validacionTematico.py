@@ -380,7 +380,7 @@ class validacion(DialogType,DialogUi):
         Aj_ics = Aj_ics.round(decimals = 0)
         Aj_ici = Aj_ici.round(decimals = 0)
         ovacc = ovacc.round(decimals = 2)
-        columnas = ["classes","UsAcc","ProdAcc","Area","Areas_adj","Ci_sup","Ci_inf"]
+        columnas = ["classes","UsAcc","ProdAcc","Area","Area_adj","CI_sup","CI_inf"]
         self.reultados.append("Tabla de error:")
         self.reultados.append("clases\tUsAcc\tProdAcc")
         with open(str(self.direccionGuardar)+"/accura.csv", mode='w') as file:
@@ -402,8 +402,8 @@ class validacion(DialogType,DialogUi):
                 writer.writerow(conca)
             self.reultados.append("Exactitud Global:\t"+str(ovacc))
             self.reultados.append("STD Global::\t"+str(se))
-            writer.writerow(["Overall accuracy:",str(ovacc)])
-            writer.writerow(["StD Overall(S(O)):",str(se)])
+            writer.writerow(["Overall accuracy (O):",str(ovacc)])
+            writer.writerow(["Std(O):",str(se)])
             
     def generarMatriz(self):#Abre llama la funcion confusion_matrix para hacer la matriz de confusion, posteriormente guarda el resultado en CSV
         datos = self.layer.getFeatures()
