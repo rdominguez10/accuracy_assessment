@@ -51,7 +51,7 @@ class aleatorios(DialogType,DialogUi):
         try:
             if self.distancia.text() != "":
                 if(int(self.distancia.text()) < 50):
-                    QMessageBox.information(self,"Error","Distancia minima 100 m",QMessageBox.Ok)
+                    QMessageBox.information(self,"Error","Distancia minima 50 m",QMessageBox.Ok)
                     self.prueba = False  
         except ValueError:    
             QMessageBox.information(self,"Error","La distancia debe de ser númerico",QMessageBox.Ok)
@@ -70,7 +70,7 @@ class aleatorios(DialogType,DialogUi):
     def abrirShp(self):#Funcion que abre cuadro de dialogo para buscar las muestras de entrenamiento
         options = QFileDialog.Option()
         options |= QFileDialog.DontUseNativeDialog 
-        fichero = QtWidgets.QFileDialog.getOpenFileName(self,"Abrir Fichero","","Shapefile Muestras(*.tif);;All Files (*)", options=options)
+        fichero = QtWidgets.QFileDialog.getOpenFileName(self,"Abrir Fichero","","Mapa de referencia(*.tif);;All Files (*)", options=options)
         if fichero[0] != '':
             self.rutaSHPMuestras=fichero[0]
             self.mapa.addItem(self.rutaSHPMuestras,1)
