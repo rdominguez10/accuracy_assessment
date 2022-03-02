@@ -136,8 +136,8 @@ class aleatorios(DialogType,DialogUi):
                         self.clases.append(int(float(row[0])))
                     else:
                         inicio = 1
-            print(self.areaHa)
-            print(self.clases)
+            #print(self.areaHa)
+            #print(self.clases)
             #self.areaHa = data[0:,2]/10000
             #self.clases = data[0:,0].astype(int)
             if encontrarMetros != -1:
@@ -148,11 +148,15 @@ class aleatorios(DialogType,DialogUi):
                 self.tableWidget.setRowCount(len(self.clases))
                 i = 0
                 for clase in self.clases:
-                    if str(clase) != str(int(nodata)):
+                    if str(nodata) != 'none':
                         self.tableWidget.setItem(i,0, QTableWidgetItem(str(clase)))
                         self.tableWidget.setItem(i,1, QTableWidgetItem('.6'))
                         i = i+1
-            
+                    else:
+                        if str(clase) != str(int(nodata)):
+                            self.tableWidget.setItem(i,0, QTableWidgetItem(str(clase)))
+                            self.tableWidget.setItem(i,1, QTableWidgetItem('.6'))
+                            i = i+1
             else:
                 QMessageBox.information(self,"Error","El raster debe de estar en proyecciones metricas",QMessageBox.Ok)
                 self.prueba = False
@@ -199,7 +203,7 @@ class aleatorios(DialogType,DialogUi):
              matrizAreaClass[i][0] = self.areaHa[i]
              matrizAreaClass[i][1] = clase
              i += 1
-        print(matrizAreaClass)
+        #print(matrizAreaClass)
         #print(self.areaHa)
         #print(self.clases)
         return  matrizAreaClass
@@ -218,7 +222,7 @@ class aleatorios(DialogType,DialogUi):
                     self.direccion = 'RandomSample'+ str(self.conteo)
 
         else:
-            print(self.conteo)
+            #print(self.conteo)
             self.direccion = 'RandomSample'+ str(self.conteo)
             self.conteo = self.conteo +1
         try:
@@ -375,7 +379,7 @@ class aleatorios(DialogType,DialogUi):
                         #    self.progressBar.setValue(y)
                         
                         elapsed_time = time.time() - start_time
-                        print("Elapsed time: %0.10f seconds." % elapsed_time)
+                        #print("Elapsed time: %0.10f seconds." % elapsed_time)
                         time.sleep(.01)
                         for y in range(99,101):
                             self.progressBar.setValue(y)       
@@ -610,7 +614,7 @@ class aleatorios(DialogType,DialogUi):
                             distancia = point2.Distance(point) 
                                                              
                             if distancia < bufferDistance:
-                                print("distancia")
+                                #print("distancia")
                                 conteo = conteo + 1
                                 if conteo != 2:
                                     x = np.where(puntosClase == punto3[0,0])
